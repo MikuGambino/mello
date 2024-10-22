@@ -1,0 +1,19 @@
+nav{
+    height: 75px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10%;
+    background-color: #6AAFFF;
+}
+nav a{
+    text-decoration: none;
+    color: black;
+}
+nav .logo{
+    font-size: 40px;
+}
+.right-nav a{
+    margin-left: 20px;
+}

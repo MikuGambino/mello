@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+</head>
+<body>
+<div layout:fragment="content" class="narrow-block">
+    <h1 class="head-title">Регистрация</h1>
+    <div class="content">
+        <form class="form block"
+              id="signupForm"
+              th:action="@{/signup}"
+              th:method="post"
+              th:object="${user}">
+            <label for="username">Никнейм:</label>
+            <input type="text" th:field="*{username}" name="username" id="username" required>
+            <span th:if="${#fields.hasErrors('username')}" class="red" th:errors="*{username}"></span>
+
+            <label for="password">Пароль:</label>
+            <input type="password" th:field="*{password}" name="password" id="password" required>
+            <span th:if="${#fields.hasErrors('password')}" class="red" th:errors="*{password}"></span>
+
+            <label for="password-repeat">Повторите пароль:</label>
+            <input type="password" name="password-repeat" id="password-repeat" required>
+
+            <label for="email">Электронная почта:</label>
+            <input th:field="*{email}" type="text" id="email" required>
+            <span th:if="${#fields.hasErrors('email')}" class="red" th:errors="*{email}"></span>
+
+            <div class="center-block">
+                <input type="submit" value="Регистрация" class="button">
+                <a type="button" class="button" th:href="@{/login}">Назад</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('signupForm').onsubmit = function(e) {
+            var password = document.getElementById('password').value;
+            var passwordRepeat = document.getElementById('password-repeat').value;
+
+            if (password !== passwordRepeat) {
+                e.preventDefault(); // Предотвращаем отправку формы
+                alert('Пароли не совпадают!');
+                return false;
+            }
+            return true;
+        };
+    </script>
+</div>
+</body>
+</html>

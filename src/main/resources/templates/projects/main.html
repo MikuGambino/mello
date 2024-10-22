@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проект</title>
+</head>
+<body>
+<div layout:fragment="content" id="list-container">
+    <div class="list" id="2">
+        <h1>TODO</h1>
+        <div class="card" draggable="true">
+            <div class="title">Complete Header Design</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+
+        <div class="card" draggable="true">
+            <div class="title">Task number 2</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+
+        <div class="card" draggable="true">
+            <div class="title">Task number 3</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+    </div>
+    <div class="list" id="1">
+        <h1>TODO</h1>
+        <div class="card" draggable="true">
+            <div class="title">Complete Header Design</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+
+        <div class="card" draggable="true">
+            <div class="title">Task number 2</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+
+        <div class="card" draggable="true">
+            <div class="title">Task number 3</div>
+            <div class="description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
+                Donec condimentum vitae orci sed bibendum.
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/dragdrop.js}"></script>
+</div>
+</body>
+</html>

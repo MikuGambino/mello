@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Профиль</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content profile">
+    <img class="small-img" th:src="'/image/' + ${image}">
+    <p th:text="${profile.getUsername()}"></p>
+  </div>
+  <div class="menu-buttons">
+    <a type="button" class="menu-button active" th:href="@{/profile}">Профиль</a>
+    <a type="button" class="menu-button" th:href="@{/signup}">Действия</a>
+    <a type="button" class="menu-button" th:href="@{/signup}">Запросы</a>
+    <a type="button" class="menu-button" th:href="@{/logout}">Выйти</a>
+  </div>
+  <form class="form block profile-edit"
+        method="post"
+        th:action="@{/profile}"
+        enctype="multipart/form-data"
+        th:object="${profile}">
+    <label for="username">Никнейм:</label>
+    <input type="text" th:field="*{username}" id="username" placeholder="Никнейм">
+    <span th:if="${#fields.hasErrors('username')}" class="red" th:errors="*{username}"></span>
+    <div class="avatar-block">
+      <label for="image">Аватар:</label>
+      <div class="avatar-right">
+        <img id="input-avatar" class="small-img" th:src="'/image/' + ${image}">
+        <input accept="image/*" id="image" name="image" type="file">
+      </div>
+    </div>
+    <input class="button" type="submit" value="Сохранить">
+  </form>
+  <script>
+    document.querySelector('input[type="file"]').onchange = event => {
+      let reader = new FileReader();
+      reader.onload = e => document.querySelector('#input-avatar').src = e.target.result;
+      reader.readAsDataURL(event.target.files[0]);
+    };
+  </script>
+</div>
+</body>
+</html>

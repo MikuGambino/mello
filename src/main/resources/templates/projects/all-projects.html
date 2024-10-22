@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проекты</title>
+</head>
+<body>
+<div layout:fragment="content" class="row margin-top">
+    <div class="projects-buttons">
+        <a type="button" class="project-button" th:href="@{/projects/add}">Создать проект</a>
+        <a type="button" class="project-button active" th:href="@{/signup}">Проекты</a>
+        <a type="button" class="project-button" th:href="@{/signup}">Архив</a>
+        <a type="button" class="project-button" th:href="@{/logout}">Избранное</a>
+    </div>
+    <div class="projects">
+        <div class="project">
+            <p class="project-name">Проект 1</p>
+            <div class="project-buttons">
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <p class="project-name">Проект 2</p>
+            <div class="project-buttons">
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <p class="project-name">Проект 3</p>
+            <div class="project-buttons">
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <p class="project-name">Проект 1</p>
+            <div class="project-buttons">
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+                <a th:href="@{/profile}">
+                    <img class="icon-button" th:src="'/image/inbox.png'"/>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
