@@ -453,3 +453,15 @@ td {
     background: #BDDBFF;
     color: black;
 }
+.image-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.image-button:hover {
+    opacity: 0.8;
+}
+.flex {
+    display: flex;
+}

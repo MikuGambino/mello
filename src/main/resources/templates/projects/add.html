@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="content" class="narrow-block">
     <h1 class="head-title">Добавить проект</h1>
-    <form class="block form" th:action="@{/projects}" th:method="post" th:object="${project}">
+    <form class="block form" th:action="@{/projects/add}" th:method="post" th:object="${project}">
         <label for="title">Название</label>
         <input type="text" th:field="*{title}" id="title" placeholder="Название">
         <span th:if="${#fields.hasErrors('title')}" class="red" th:errors="*{title}"></span>

@@ -10,11 +10,35 @@
 <body>
 <div layout:fragment="content" id="list-container">
     <div class="list" th:id="'list-' + ${list.getId()}" th:each="list : ${lists}">
-        <h1 th:text="${list.getTitle()}"></h1>
+        <div class="list-header">
+            <h1 th:text="${list.getTitle()}"></h1>
+
+            <form th:action="@{/projects/{id}/lists/{listingId}/change(id=${projectId}, listingId=${list.getId()})}"
+                  method="post" class="edit-button flex">
+                <input type="text" class="listTitleInput" name="newListName" th:value="${list.getTitle()}" hidden="hidden">
+                <button type="button" th:onclick="|changeListTitle('list-${list.getId()}')|" class="image-button">
+                    <img class="icon-button" th:src="'/image/edit.png'"/>
+                </button>
+                <button type="submit" class="image-button" hidden="hidden">
+                    <img class="icon-button" th:src="'/image/correct.png'"/>
+                </button>
+            </form>
+            <form th:action="@{/projects/{id}/lists/{listingId}/delete(id=${projectId}, listingId=${list.getId()})}"
+                  method="post" class="trash-button">
+                <button type="submit" class="image-button">
+                    <img class="icon-button" th:src="'/image/trash.png'"/>
+                </button>
+            </form>
+        </div>
         <div class="card" th:id="'card-' + ${task.getId()}" draggable="true" th:each="task : ${list.getTasks()}">
             <p class="title" th:text="${task.getTitle()}"></p>
             <p class="description" th:text="${task.getDescription()}"></p>
         </div>
+    </div>
+    <div class="add-list">
+        <a th:href="@{/projects/{id}/add-listing(id=${projectId})}">
+            <img class="ultra-small-img" th:src="'/image/plus.png'"/>
+        </a>
     </div>
     <script th:src="@{/js/dragdrop.js}"></script>
     <script th:src="@{/js/project.js}"></script>

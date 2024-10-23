@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.sstu.Mello.model.dto.TaskRequest;
+import ru.sstu.Mello.security.CurrentUser;
+import ru.sstu.Mello.security.UserPrincipal;
 import ru.sstu.Mello.service.ListingService;
 
 import java.util.List;
@@ -18,14 +20,18 @@ public class ListingController {
 
     @ResponseBody
     @PostMapping("/{listId}/change-order")
-    public ResponseEntity<Void> saveListingState(@PathVariable int listId, @RequestBody List<TaskRequest> tasks) {
+    public ResponseEntity<Void> saveListingState(@PathVariable int listId, @RequestBody List<TaskRequest> tasks,
+                                                 @CurrentUser UserPrincipal currentUser) {
+        // todo добавить проверку
         listingService.changeOrder(listId, tasks);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ResponseBody
     @PostMapping("/{targetListId}/move/{taskId}")
-    public ResponseEntity<Void> moveTask(@PathVariable int targetListId, @PathVariable int taskId) {
+    public ResponseEntity<Void> moveTask(@PathVariable int targetListId, @PathVariable int taskId,
+                                         @CurrentUser UserPrincipal currentUser) {
+        // todo добавить проверку
         listingService.moveTask(targetListId, taskId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
