@@ -1,6 +1,8 @@
 let cards = document.querySelectorAll('.card');
 let lists = document.querySelectorAll('.list');
 
+var start = 0;
+var end = 0;
 
 cards.forEach((card)=>{
     registerEventsOnCard(card);
@@ -39,13 +41,14 @@ function getCardAfterDraggingCard(list, yDraggingCard){
 
 function registerEventsOnCard(card){
     card.addEventListener('dragstart', (e)=>{
-		console.log(card.parentNode.id);
+		start = card.parentNode.id;
         card.classList.add('dragging');
     });
 
 
     card.addEventListener('dragend', (e)=>{
-		console.log(card.parentNode.id);
+		end = card.parentNode.id;
+        saveState(start, end, card.id);
         card.classList.remove('dragging');
     });
 }

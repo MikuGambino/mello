@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity(name = "list")
 @Builder
@@ -19,4 +21,6 @@ public class Listing {
     @JoinColumn(name = "project_id")
     private Project project;
     private String title;
+    @OneToMany(mappedBy = "list")
+    private List<Task> tasks;
 }

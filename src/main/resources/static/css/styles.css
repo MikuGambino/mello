@@ -1,7 +1,11 @@
 body{
+    height: 100%;
     margin: 0;
     background: #F6F8FB;
     font-family: 'Open Sans', sans-serif;
+}
+html {
+    height: 100%;
 }
 input[type=text], input[type=password], input[type=date],  select{
     height: 25px;
@@ -410,16 +414,17 @@ td {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
     width: 900px;
 }
 .project {
     height: 100px;
     width: 200px;
+    margin-right: 20px;
     background: #bfbfbf;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    margin-bottom: 20px;
 }
 .icon-button {
     width: 30px;

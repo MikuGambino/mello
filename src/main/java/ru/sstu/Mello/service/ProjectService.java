@@ -53,10 +53,18 @@ public class ProjectService {
         Task exampleTask1 = Task.builder()
                 .title("Example 1")
                 .description("It's example")
-                .positional(0)
+                .position(0)
                 .list(todo)
                 .build();
         taskRepository.save(exampleTask1);
+
+        Task exampleTask2 = Task.builder()
+                .title("Example 2")
+                .description("It's example")
+                .position(1)
+                .list(todo)
+                .build();
+        taskRepository.save(exampleTask2);
 
         Listing inAction = Listing.builder()
                 .project(project)

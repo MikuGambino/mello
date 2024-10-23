@@ -18,7 +18,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "list_id")
     private Listing list;
-    private int positional;
+    private int position;
     private String title;
     private String description;
 }

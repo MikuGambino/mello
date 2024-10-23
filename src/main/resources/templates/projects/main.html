@@ -9,65 +9,15 @@
 </head>
 <body>
 <div layout:fragment="content" id="list-container">
-    <div class="list" id="2">
-        <h1>TODO</h1>
-        <div class="card" draggable="true">
-            <div class="title">Complete Header Design</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
-        </div>
-
-        <div class="card" draggable="true">
-            <div class="title">Task number 2</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
-        </div>
-
-        <div class="card" draggable="true">
-            <div class="title">Task number 3</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
-        </div>
-    </div>
-    <div class="list" id="1">
-        <h1>TODO</h1>
-        <div class="card" draggable="true">
-            <div class="title">Complete Header Design</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
-        </div>
-
-        <div class="card" draggable="true">
-            <div class="title">Task number 2</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
-        </div>
-
-        <div class="card" draggable="true">
-            <div class="title">Task number 3</div>
-            <div class="description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                sit amet volutpat dui. Cras sed vulputate augue, vel egestas quam.
-                Donec condimentum vitae orci sed bibendum.
-            </div>
+    <div class="list" th:id="'list-' + ${list.getId()}" th:each="list : ${lists}">
+        <h1 th:text="${list.getTitle()}"></h1>
+        <div class="card" th:id="'card-' + ${task.getId()}" draggable="true" th:each="task : ${list.getTasks()}">
+            <p class="title" th:text="${task.getTitle()}"></p>
+            <p class="description" th:text="${task.getDescription()}"></p>
         </div>
     </div>
     <script th:src="@{/js/dragdrop.js}"></script>
+    <script th:src="@{/js/project.js}"></script>
 </div>
 </body>
 </html>
