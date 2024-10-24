@@ -31,6 +31,9 @@
   font-weight: bold;
   margin-bottom: 10px;
   text-align: center;
+  display: block;
+  text-decoration: none;
+  color: black;
 }
 .list h1 {
   text-align: center;

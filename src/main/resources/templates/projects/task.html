@@ -5,13 +5,13 @@
       layout:decorate="~{default}" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить задачу</title>
+    <title>Редактировать задачу</title>
 </head>
 <body>
 <div layout:fragment="content" class="narrow-block">
-    <h1 class="head-title">Добавить задачу</h1>
+    <h1 class="head-title">Редактировать задачу</h1>
     <form class="block form"
-          th:action="@{/projects/{id}/lists/{listingId}/tasks/new(id=${projectId}, listingId=${listingId})}"
+          th:action="@{/projects/{id}/tasks/{taskId}(id=${projectId}, taskId=${task.getId()})}"
           th:method="post" th:object="${task}">
         <label for="title">Название</label>
         <input type="text" th:field="*{title}" id="title" placeholder="Название" required>
@@ -20,19 +20,11 @@
         <label for="title">Описание</label>
         <input type="text" th:field="*{description}" id="description" placeholder="Описание">
         <span th:if="${#fields.hasErrors('description')}" class="red" th:errors="*{description}"></span>
-
-        <div>
-            <label>Подзадачи:</label>
-            <div id="subtasks-container"></div>
-            <button type="button" class="button" onclick="addSubtask()">Добавить подзадачу</button>
-        </div>
-
         <div class="buttons-block-around">
             <a type="button" class="button" th:href="@{/projects/{id}(id=${projectId})}">Назад</a>
-            <input type="submit" value="Создать" class="button">
+            <input type="submit" value="Редактировать" class="button">
         </div>
     </form>
-    <script th:src="@{/js/task-add.js}"></script>
 </div>
 </body>
 </html>

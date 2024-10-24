@@ -9,6 +9,7 @@ import ru.sstu.Mello.model.Project;
 import ru.sstu.Mello.model.Subtask;
 import ru.sstu.Mello.model.Task;
 import ru.sstu.Mello.model.dto.AddTaskRequest;
+import ru.sstu.Mello.model.dto.EditTaskRequest;
 import ru.sstu.Mello.repository.ListingRepository;
 import ru.sstu.Mello.repository.ProjectRepository;
 import ru.sstu.Mello.repository.SubtaskRepository;
@@ -48,5 +49,19 @@ public class TaskService {
                                 .build())
                 .peek(subtaskRepository::save)
                 .toList();
+    }
+
+    public Task getTask(int id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
+    }
+
+    public void saveTask(int id, EditTaskRequest taskRequest, UserPrincipal currentUser) {
+        Task task = getTask(id);
+
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
+
+        taskRepository.save(task);
     }
 }

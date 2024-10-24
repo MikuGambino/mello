@@ -2,24 +2,19 @@ package ru.sstu.Mello.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.sstu.Mello.model.dto.AddTaskRequest;
+import ru.sstu.Mello.model.dto.EditTaskRequest;
 import ru.sstu.Mello.model.dto.ListingRequest;
 import ru.sstu.Mello.model.dto.ProjectRequest;
-import ru.sstu.Mello.model.dto.TaskRequest;
 import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
 import ru.sstu.Mello.service.ListingService;
 import ru.sstu.Mello.service.ProjectService;
 import ru.sstu.Mello.service.TaskService;
-
-import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/projects")
@@ -131,6 +126,33 @@ public class ProjectController {
         }
 
         taskService.addTask(listingId, task, currentUser);
+        return "redirect:/projects/{id}";
+    }
+
+    @GetMapping("/{id}/tasks/{taskId}")
+    public String editTaskView(@PathVariable int id, @PathVariable int taskId,
+                               Model model, @CurrentUser UserPrincipal currentUser) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("task", taskService.getTask(taskId));
+        model.addAttribute("projectId", id);
+
+        return "/projects/task";
+    }
+
+    @PostMapping("/{id}/tasks/{taskId}")
+    public String editTask(@PathVariable int id, @PathVariable int taskId,
+                           Model model, @CurrentUser UserPrincipal currentUser,
+                           @ModelAttribute @Valid EditTaskRequest task, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("image", currentUser.getImage());
+            model.addAttribute("task", taskService.getTask(taskId));
+            model.addAttribute("projectId", id);
+            return "projects/add-task";
+        }
+
+        taskService.saveTask(taskId, task, currentUser);
+
         return "redirect:/projects/{id}";
     }
 }

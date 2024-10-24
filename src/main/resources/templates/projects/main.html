@@ -13,7 +13,6 @@
         <div class="list" th:id="'list-' + ${list.getId()}">
             <div class="list-header">
                 <h1 th:text="${list.getTitle()}"></h1>
-
                 <form th:action="@{/projects/{id}/lists/{listingId}/change(id=${projectId}, listingId=${list.getId()})}"
                       method="post" class="edit-button flex">
                     <input type="text" class="listTitleInput" name="newListName" th:value="${list.getTitle()}" hidden="hidden">
@@ -32,7 +31,8 @@
                 </form>
             </div>
             <div class="card" th:id="'card-' + ${task.getId()}" draggable="true" th:each="task : ${list.getTasks()}">
-                <p class="title" th:text="${task.getTitle()}"></p>
+                <a class="title"
+                   th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId}, taskId=${task.getId()})}" th:text="${task.getTitle()}"></a>
                 <p class="description" th:text="${task.getDescription()}"></p>
             </div>
         </div>
