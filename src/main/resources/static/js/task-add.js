@@ -15,6 +15,7 @@ function addSubtask() {
     deleteButton.type = 'button';
     deleteButton.textContent = 'Удалить';
     deleteButton.classList.add('button');
+    deleteButton.classList.add('red-button');
     deleteButton.onclick = (function(index) {
         return function() {
             removeSubtask(index);

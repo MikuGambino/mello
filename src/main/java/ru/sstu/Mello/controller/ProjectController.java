@@ -6,14 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.sstu.Mello.model.dto.AddTaskRequest;
-import ru.sstu.Mello.model.dto.EditTaskRequest;
-import ru.sstu.Mello.model.dto.ListingRequest;
-import ru.sstu.Mello.model.dto.ProjectRequest;
+import ru.sstu.Mello.model.dto.*;
 import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
 import ru.sstu.Mello.service.ListingService;
 import ru.sstu.Mello.service.ProjectService;
+import ru.sstu.Mello.service.SubtaskService;
 import ru.sstu.Mello.service.TaskService;
 
 @Controller
@@ -23,6 +21,7 @@ public class ProjectController {
     private final ProjectService projectService;
     private final ListingService listingService;
     private final TaskService taskService;
+    private final SubtaskService subtaskService;
 
     @GetMapping
     public String projects(Model model, @CurrentUser UserPrincipal currentUser) {
@@ -154,5 +153,40 @@ public class ProjectController {
         taskService.saveTask(taskId, task, currentUser);
 
         return "redirect:/projects/{id}";
+    }
+
+    @GetMapping("/{id}/tasks/{taskId}/subtasks/new")
+    public String newSubtaskView(Model model, @CurrentUser UserPrincipal currentUser,
+                                 @PathVariable int id, @PathVariable int taskId) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("subtask", new SubtaskRequest());
+        model.addAttribute("projectId", id);
+        model.addAttribute("taskId", taskId);
+
+        return "projects/add-subtask";
+    }
+
+    @PostMapping("/{id}/tasks/{taskId}/subtasks/new")
+    public String newSubtask(@PathVariable int id, @PathVariable int taskId,
+                             Model model, @CurrentUser UserPrincipal currentUser,
+                             @ModelAttribute @Valid SubtaskRequest subtask, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("image", currentUser.getImage());
+            model.addAttribute("projectId", id);
+            model.addAttribute("taskId", taskId);
+            return "projects/add-subtask";
+        }
+
+        subtaskService.addSubtask(taskId, subtask, currentUser);
+
+        return "redirect:/projects/{id}/tasks/{taskId}";
+    }
+
+    @PostMapping("/{id}/tasks/{taskId}/subtasks/{subtaskId}/delete")
+    public String deleteSubtask(@PathVariable int id, @PathVariable int taskId, @PathVariable int subtaskId,
+                                @CurrentUser UserPrincipal currentUser) {
+        subtaskService.deleteSubtask(subtaskId, currentUser);
+
+        return "redirect:/projects/{id}/tasks/{taskId}";
     }
 }

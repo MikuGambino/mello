@@ -62,14 +62,13 @@ textarea{
 .button:hover{
     color: black;
     background: #BDDBFF;
-    outline: 1px #BDDBFF solid;
 }
 .red-button{
     background: #ff2626;
 }
 .red-button:hover{
-    color: #ff2626;
-    outline: 1px #ff2626 solid;
+    background: #ffa5a5;
+    color: black;
 }
 .account-buttons{
     width: 25%;
@@ -474,4 +473,17 @@ td {
 }
 #subtasks-container input{
     margin-right: 10px;
+}
+.subtask-block {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+.subtask-block input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+.subtask-input-block {
+    display: flex;
 }

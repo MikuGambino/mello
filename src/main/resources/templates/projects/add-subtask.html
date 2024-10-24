@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить подзадачу</title>
+</head>
+<body>
+<div layout:fragment="content" class="narrow-block">
+    <h1 class="head-title">Добавить подзадачу</h1>
+    <form class="block form" th:action="@{/projects/{id}/tasks/{taskId}/subtasks/new(id=${projectId}, taskId=${taskId})}"
+          th:method="post" th:object="${subtask}">
+        <label for="title">Название</label>
+        <input type="text" th:field="*{title}" id="title" placeholder="Название">
+        <span th:if="${#fields.hasErrors('title')}" class="red" th:errors="*{title}"></span>
+        <div class="buttons-block-around">
+            <a type="button" class="button" th:href="@{/projects/{id}/tasks/{taskId}(id=${projectId}, taskId=${taskId})}">Назад</a>
+            <input type="submit" value="Добавить" class="button">
+        </div>
+    </form>
+</div>
+</body>
+</html>

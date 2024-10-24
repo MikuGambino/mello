@@ -22,9 +22,27 @@
         <span th:if="${#fields.hasErrors('description')}" class="red" th:errors="*{description}"></span>
         <div class="buttons-block-around">
             <a type="button" class="button" th:href="@{/projects/{id}(id=${projectId})}">Назад</a>
-            <input type="submit" value="Редактировать" class="button">
+            <input type="submit" value="Сохранить" class="button">
         </div>
     </form>
+    <div class="block">
+        <div class="block-header">
+            <p>Подзадачи</p>
+            <a type="button" class="button"
+               th:href="@{/projects/{projectId}/tasks/{id}/subtasks/new(projectId=${projectId}, id=${task.getId()})}">Добавить</a>
+        </div>
+        <div th:each="subtask : ${task.getSubtasks()}" class="subtask-block">
+                <div class="subtask-input-block">
+                    <input type="checkbox" th:id="'subtask-'+${subtask.getId()}"
+                           th:checked="${subtask.isComplete()}"/>
+                    <label th:for="'subtask-'+${subtask.getId()}" th:text="${subtask.getTitle()}"></label>
+                </div>
+                <form th:method="post"
+                      th:action="@{/projects/{projectId}/tasks/{taskId}/subtasks/{id}/delete(taskId=${task.getId()}, projectId=${projectId}, id=${subtask.getId()})}">
+                    <input type="submit" class="red-button button" th:value="Удалить">
+                </form>
+            </div>
+    </div>
 </div>
 </body>
 </html>

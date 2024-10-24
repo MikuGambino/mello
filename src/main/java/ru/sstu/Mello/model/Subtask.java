@@ -21,4 +21,8 @@ public class Subtask {
     private String title;
     @JoinColumn(name = "is_complete")
     private boolean isComplete;
+
+    public boolean isComplete() {
+        return isComplete;
+    }
 }
