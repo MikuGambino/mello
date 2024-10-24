@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.sstu.Mello.model.dto.AddTaskRequest;
 import ru.sstu.Mello.model.dto.ListingRequest;
 import ru.sstu.Mello.model.dto.ProjectRequest;
 import ru.sstu.Mello.model.dto.TaskRequest;
@@ -15,6 +16,7 @@ import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
 import ru.sstu.Mello.service.ListingService;
 import ru.sstu.Mello.service.ProjectService;
+import ru.sstu.Mello.service.TaskService;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,6 +27,7 @@ import java.util.logging.Logger;
 public class ProjectController {
     private final ProjectService projectService;
     private final ListingService listingService;
+    private final TaskService taskService;
 
     @GetMapping
     public String projects(Model model, @CurrentUser UserPrincipal currentUser) {
@@ -102,6 +105,32 @@ public class ProjectController {
                                      @RequestParam("newListName") String newListName) {
         listingService.changeTitle(listingId, newListName, currentUser);
 
+        return "redirect:/projects/{id}";
+    }
+
+    @GetMapping("/{id}/lists/{listingId}/tasks/new")
+    public String createTaskView(Model model, @CurrentUser UserPrincipal currentUser,
+                                 @PathVariable int id, @PathVariable int listingId) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("task", new AddTaskRequest());
+        model.addAttribute("projectId", id);
+        model.addAttribute("listingId", listingId);
+
+        return "projects/add-task";
+    }
+
+    @PostMapping("/{id}/lists/{listingId}/tasks/new")
+    public String createTask(@ModelAttribute @Valid AddTaskRequest task, BindingResult bindingResult,
+                             @PathVariable int id, @PathVariable int listingId,
+                             @CurrentUser UserPrincipal currentUser, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("projectId", id);
+            model.addAttribute("listingId", listingId);
+            model.addAttribute("image", currentUser.getImage());
+            return "projects/add-task";
+        }
+
+        taskService.addTask(listingId, task, currentUser);
         return "redirect:/projects/{id}";
     }
 }

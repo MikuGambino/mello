@@ -465,3 +465,13 @@ td {
 .flex {
     display: flex;
 }
+.add-task {
+    display: flex;
+    justify-content: center;
+    margin-right: 50px;
+    background-color: rgb(218, 218, 218);
+    padding: 5px;
+}
+#subtasks-container input{
+    margin-right: 10px;
+}

@@ -6,23 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@Entity(name = "task")
+@Entity(name = "subtask")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class Subtask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "list_id")
-    private Listing list;
-    private int position;
+    @JoinColumn(name = "task_id")
+    private Task task;
     private String title;
-    private String description;
-    @OneToMany(mappedBy = "task")
-    private List<Subtask> subtasks;
+    @JoinColumn(name = "is_complete")
+    private boolean isComplete;
 }
