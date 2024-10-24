@@ -16,6 +16,7 @@ import ru.sstu.Mello.repository.SubtaskRepository;
 import ru.sstu.Mello.repository.TaskRepository;
 import ru.sstu.Mello.security.UserPrincipal;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -52,8 +53,11 @@ public class TaskService {
     }
 
     public Task getTask(int id) {
-        return taskRepository.findById(id)
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
+
+        task.setSubtasks(task.getSubtasks().stream().sorted(Comparator.comparingInt(Subtask::getId)).toList());
+        return task;
     }
 
     public void saveTask(int id, EditTaskRequest taskRequest, UserPrincipal currentUser) {

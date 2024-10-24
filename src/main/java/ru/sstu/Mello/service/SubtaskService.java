@@ -39,4 +39,10 @@ public class SubtaskService {
         Subtask subtask = getSubtask(subtaskId);
         subtaskRepository.delete(subtask);
     }
+
+    public void updateStatus(int subtaskId, boolean status, UserPrincipal currentUser) {
+        Subtask subtask = getSubtask(subtaskId);
+        subtask.setComplete(status);
+        subtaskRepository.save(subtask);
+    }
 }

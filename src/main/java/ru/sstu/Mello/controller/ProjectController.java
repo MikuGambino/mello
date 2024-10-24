@@ -2,6 +2,8 @@ package ru.sstu.Mello.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,8 @@ import ru.sstu.Mello.service.ListingService;
 import ru.sstu.Mello.service.ProjectService;
 import ru.sstu.Mello.service.SubtaskService;
 import ru.sstu.Mello.service.TaskService;
+
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/projects")
@@ -188,5 +192,15 @@ public class ProjectController {
         subtaskService.deleteSubtask(subtaskId, currentUser);
 
         return "redirect:/projects/{id}/tasks/{taskId}";
+    }
+
+    @ResponseBody
+    @PostMapping("/{id}/tasks/{taskId}/subtasks/{subtaskId}/update-status")
+    public ResponseEntity<Void> updateStatus(@PathVariable int subtaskId,
+                                             @RequestParam("status") boolean status,
+                                             @CurrentUser UserPrincipal currentUser) {
+        subtaskService.updateStatus(subtaskId, status, currentUser);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

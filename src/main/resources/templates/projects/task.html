@@ -32,17 +32,19 @@
                th:href="@{/projects/{projectId}/tasks/{id}/subtasks/new(projectId=${projectId}, id=${task.getId()})}">Добавить</a>
         </div>
         <div th:each="subtask : ${task.getSubtasks()}" class="subtask-block">
-                <div class="subtask-input-block">
-                    <input type="checkbox" th:id="'subtask-'+${subtask.getId()}"
-                           th:checked="${subtask.isComplete()}"/>
-                    <label th:for="'subtask-'+${subtask.getId()}" th:text="${subtask.getTitle()}"></label>
-                </div>
-                <form th:method="post"
-                      th:action="@{/projects/{projectId}/tasks/{taskId}/subtasks/{id}/delete(taskId=${task.getId()}, projectId=${projectId}, id=${subtask.getId()})}">
-                    <input type="submit" class="red-button button" th:value="Удалить">
-                </form>
+            <div class="subtask-input-block">
+                <input type="checkbox" th:id="'subtask-'+${subtask.getId()}"
+                       th:checked="${subtask.isComplete()}"
+                       th:onclick="|updateSubtaskStatus(${projectId}, ${task.getId()}, ${subtask.id}, this.checked)|"/>
+                <label th:for="'subtask-'+${subtask.getId()}" th:text="${subtask.getTitle()}"></label>
             </div>
+            <form th:method="post"
+                  th:action="@{/projects/{projectId}/tasks/{taskId}/subtasks/{id}/delete(taskId=${task.getId()}, projectId=${projectId}, id=${subtask.getId()})}">
+                <input type="submit" class="red-button button" th:value="Удалить">
+            </form>
+        </div>
     </div>
+    <script th:src="@{/js/subtask.js}"></script>
 </div>
 </body>
 </html>
