@@ -16,8 +16,10 @@ import ru.sstu.Mello.repository.SubtaskRepository;
 import ru.sstu.Mello.repository.TaskRepository;
 import ru.sstu.Mello.security.UserPrincipal;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -41,22 +43,21 @@ public class TaskService {
 
         taskRepository.save(task);
 
-        List<Subtask> subtasks = addTaskRequest.getSubtasks().stream()
+        addTaskRequest.getSubtasks().stream()
                 .map(tr ->
                         Subtask.builder()
                                 .title(tr.getName())
                                 .task(task)
                                 .isComplete(false)
                                 .build())
-                .peek(subtaskRepository::save)
-                .toList();
+                .peek(subtaskRepository::save);
     }
 
     public Task getTask(int id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
 
-        task.setSubtasks(task.getSubtasks().stream().sorted(Comparator.comparingInt(Subtask::getId)).toList());
+        task.getSubtasks().sort(Comparator.comparingInt(Subtask::getId));
         return task;
     }
 

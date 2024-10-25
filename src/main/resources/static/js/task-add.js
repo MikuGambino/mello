@@ -10,6 +10,7 @@ function addSubtask() {
     input.type = 'text';
     input.name = 'subtasks[' + subtaskIndex + '].name';
     input.placeholder = 'Название подзадачи';
+    input.required = true;
 
     var deleteButton = document.createElement('button');
     deleteButton.type = 'button';

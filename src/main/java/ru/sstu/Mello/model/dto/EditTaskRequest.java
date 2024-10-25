@@ -11,5 +11,4 @@ public class EditTaskRequest {
     @NotBlank
     private String title;
     private String description;
-    private List<AddSubtaskRequest> subtasks = new ArrayList<>();
 }
