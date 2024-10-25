@@ -10,6 +10,14 @@
 <body>
 <div layout:fragment="content" class="narrow-block">
     <h1 class="head-title">Редактировать задачу</h1>
+    <div class="block">
+        <div class="buttons-block-around">
+            <form th:method="post"
+                  th:action="@{/projects/{projectId}/tasks/{taskId}/delete(taskId=${task.getId()}, projectId=${projectId})}">
+                <input type="submit" class="red-button button" th:value="'Удалить задачу'">
+            </form>
+        </div>
+    </div>
     <form class="block form"
           th:action="@{/projects/{id}/tasks/{taskId}(id=${projectId}, taskId=${task.getId()})}"
           th:method="post" th:object="${task}">

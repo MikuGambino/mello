@@ -203,4 +203,12 @@ public class ProjectController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/tasks/{taskId}/delete")
+    public String deleteTask(@PathVariable int id, @PathVariable int taskId,
+                             @CurrentUser UserPrincipal currentUser) {
+        taskService.deleteTask(taskId, currentUser);
+
+        return "redirect:/projects/{id}";
+    }
 }
