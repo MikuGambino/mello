@@ -8,13 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.sstu.Mello.model.Project;
 import ru.sstu.Mello.model.dto.*;
 import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
-import ru.sstu.Mello.service.ListingService;
-import ru.sstu.Mello.service.ProjectService;
-import ru.sstu.Mello.service.SubtaskService;
-import ru.sstu.Mello.service.TaskService;
+import ru.sstu.Mello.service.*;
 
 import java.util.logging.Logger;
 
@@ -26,6 +24,7 @@ public class ProjectController {
     private final ListingService listingService;
     private final TaskService taskService;
     private final SubtaskService subtaskService;
+    private final UserService userService;
 
     @GetMapping
     public String projects(Model model, @CurrentUser UserPrincipal currentUser) {
@@ -60,6 +59,7 @@ public class ProjectController {
                               @PathVariable int id) {
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
+        model.addAttribute("projectPage", true);
         model.addAttribute("lists", listingService.getListingsByProject(id));
 
         return "projects/main";
@@ -210,5 +210,82 @@ public class ProjectController {
         taskService.deleteTask(taskId, currentUser);
 
         return "redirect:/projects/{id}";
+    }
+
+    @GetMapping("/{id}/members")
+    public String members(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser) {
+        Project project = projectService.getProject(id);
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("projectId", id);
+        model.addAttribute("members", projectService.getMembers(id));
+        model.addAttribute("isOwner", projectService.isOwner(currentUser.getUsername(), id));
+        model.addAttribute("owner", project.getOwner());
+        model.addAttribute("request", new UsernameRequest());
+        model.addAttribute("invitations", project.getInvitations());
+
+        return "projects/members";
+    }
+
+    @PostMapping("/{id}/members")
+    public String sendInvite(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser,
+                             @ModelAttribute("request") UsernameRequest request, BindingResult bindingResult) {
+        if (!userService.existsByUsername(request.getUsername())) {
+            bindingResult.rejectValue("username", "error.request",
+                    "Данного пользователя не существует");
+        } else {
+            if (projectService.hasInvitation(id, request.getUsername())) {
+                bindingResult.rejectValue("username", "error.request",
+                        "Пользователь уже имеет приглашение");
+            }
+            if (projectService.isMember(id, request.getUsername())) {
+                bindingResult.rejectValue("username", "error.request",
+                        "Пользователь уже является участником");
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            Project project = projectService.getProject(id);
+            model.addAttribute("image", currentUser.getImage());
+            model.addAttribute("projectId", id);
+            model.addAttribute("members", projectService.getMembers(id));
+            model.addAttribute("isOwner", projectService.isOwner(currentUser.getUsername(), id));
+            model.addAttribute("owner", project.getOwner());
+            model.addAttribute("invitations", project.getInvitations());
+
+            return "projects/members";
+        }
+
+        projectService.sendInvite(id, request.getUsername(), currentUser);
+        return "redirect:/projects/{id}/members";
+    }
+
+    @PostMapping("/{id}/members/{userId}/delete")
+    public String deleteInvitation(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser,
+                                   @PathVariable int userId) {
+        projectService.deleteInvitation(id, userId, currentUser);
+
+        return "redirect:/projects/{id}/members";
+    }
+
+    @PostMapping("/{id}/requests/reject")
+    public String rejectRequest(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+        projectService.rejectRequest(id, currentUser);
+
+        return "redirect:/profile/requests";
+    }
+
+    @PostMapping("/{id}/requests/accept")
+    public String acceptRequest(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+        projectService.acceptRequest(id, currentUser);
+
+        return "redirect:/profile/requests";
+    }
+
+    @PostMapping("/{id}/kick/{userId}")
+    public String kickUser(@PathVariable int id, @PathVariable int userId,
+                           @CurrentUser UserPrincipal currentUser) {
+        projectService.kickMember(id, userId, currentUser);
+
+        return "redirect:/projects/{id}/members";
     }
 }

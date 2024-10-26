@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Профиль</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="content profile">
+    <img class="small-img" th:src="'/image/' + ${image}">
+    <p th:text="${profile.getUsername()}"></p>
+  </div>
+  <div class="menu-buttons">
+    <a type="button" class="menu-button" th:href="@{/profile}">Профиль</a>
+    <a type="button" class="menu-button active" th:href="@{/profile/requests}">Запросы</a>
+    <a type="button" class="menu-button" th:href="@{/logout}">Выйти</a>
+  </div>
+  <div class="content block align-center">
+    <h2>Приглашения</h2>
+    <div class="member" th:each="project : ${invitations}">
+      <p th:text="${project.getTitle()}" class="member-username"></p>
+      <div>
+        <form th:method="post"
+              th:action="@{/projects/{id}/requests/reject(id=${project.getId()})}">
+          <input type="submit" class="red-button button" th:value="Отклонить">
+        </form>
+        <form th:method="post"
+              th:action="@{/projects/{id}/requests/accept(id=${project.getId()})}">
+          <input type="submit" class="button" th:value="Принять">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

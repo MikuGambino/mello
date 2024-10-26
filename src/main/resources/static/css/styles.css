@@ -64,7 +64,7 @@ textarea{
     background: #BDDBFF;
 }
 .red-button{
-    background: #ff2626;
+    background: #ff6565;
 }
 .red-button:hover{
     background: #ffa5a5;
@@ -486,4 +486,43 @@ td {
 }
 .subtask-input-block {
     display: flex;
+}
+.member {
+    width: 650px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: #f4f4f4;
+}
+.member div {
+    display: flex;
+    align-items: center;
+}
+.member p {
+    margin-left: 10px;
+    margin-right: 20px;
+}
+.align-center {
+    align-items: center;
+}
+.add-user {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 650px;
+    margin-top: 20px;
+}
+.add-user label, input {
+    margin-right: 10px;
+}
+.add-user p {
+    margin-top: 5px;
+    margin-right: 20px;
+}
+.add-user input[type=text] {
+    width: 200px;
 }

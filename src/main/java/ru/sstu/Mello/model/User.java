@@ -19,6 +19,13 @@ public class User {
     private String password;
     private String email;
     private String image;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "invitations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private List<Project> invitations;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

@@ -8,14 +8,15 @@
 </head>
 <body>
   <nav th:fragment="header">
-      <a th:href="@{/projects}" class="logo">Mello</a>
+      <div class="left-nav">
+          <a th:href="@{/projects}" class="logo">Mello</a>
+          <a th:href="@{/projects/{projectId}/members(projectId=${projectId})}"
+             th:if="${projectPage != null}" class="header-link">Участники</a>
+      </div>
       <div class="right-nav">
           <a th:href="@{/profile}" sec:authorize="isAuthenticated()">
               <img class="ultra-small-img" th:src="'/image/' + ${image}"/>
           </a>
-          <a th:href="@{/account?role=admin}" sec:authorize="${hasRole('ADMIN')}">Админ-панель</a>
-          <a th:href="@{/account?role=doctor}" sec:authorize="${hasRole('DOCTOR')}">Кабинет врача</a>
-          <a th:href="@{/account?role=patient}" sec:authorize="${hasRole('PATIENT')}">Кабинет пациента</a>
       </div>
   </nav>
 </body>

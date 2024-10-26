@@ -12,6 +12,7 @@ import ru.sstu.Mello.model.User;
 import ru.sstu.Mello.model.dto.EditProfileRequest;
 import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
+import ru.sstu.Mello.service.ProjectService;
 import ru.sstu.Mello.service.UserService;
 
 import java.util.Objects;
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
 @RequestMapping("/profile")
 public class ProfileController {
     private final UserService userService;
+    private final ProjectService projectService;
 
     @GetMapping
     public String profile(Model model, @CurrentUser UserPrincipal currentUser) {
@@ -50,5 +52,14 @@ public class ProfileController {
 
         userService.updateUser(currentUser.getId(), profileRequest, file, currentUser);
         return "redirect:/profile";
+    }
+
+    @GetMapping("/requests")
+    public String profileRequestsView(Model model, @CurrentUser UserPrincipal currentUser) {
+        model.addAttribute("profile", currentUser);
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("invitations", userService.getInvitations(currentUser.getUsername()));
+
+        return "profile/requests";
     }
 }

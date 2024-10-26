@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.sstu.Mello.exception.AccessDeniedException;
 import ru.sstu.Mello.exception.ResourceNotFoundException;
+import ru.sstu.Mello.model.Project;
 import ru.sstu.Mello.model.User;
 import ru.sstu.Mello.model.dto.EditProfileRequest;
 import ru.sstu.Mello.model.dto.SignUpForm;
@@ -90,5 +91,11 @@ public class UserService {
     public User getUser(int id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+    }
+
+    public List<Project> getInvitations(String username) {
+        User user = getByUsername(username);
+
+        return user.getInvitations();
     }
 }

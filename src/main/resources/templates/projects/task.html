@@ -14,7 +14,7 @@
         <div class="buttons-block-around">
             <form th:method="post"
                   th:action="@{/projects/{projectId}/tasks/{taskId}/delete(taskId=${task.getId()}, projectId=${projectId})}">
-                <input type="submit" class="red-button button" th:value="'Удалить задачу'">
+                <input type="submit" class="red-button button" value="Удалить задачу">
             </form>
         </div>
     </div>

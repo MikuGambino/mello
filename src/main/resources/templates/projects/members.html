@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список участников</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="content block align-center">
+        <h2>Участники</h2>
+        <div class="member" style="background: #ffee95;">
+            <div>
+                <img class="ultra-small-img" th:src="'/image/' + ${owner.getImage()}">
+                <p th:text="${owner.getUsername()}" class="member-username"></p>
+            </div>
+            <p>Создатель</p>
+        </div>
+        <div class="member" th:each="member : ${members}">
+            <div>
+                <img class="ultra-small-img" th:src="'/image/' + ${member.getImage()}">
+                <p th:text="${member.getUsername()}" class="member-username"></p>
+            </div>
+            <form th:method="post" th:if="${isOwner}"
+                  th:action="@{/projects/{id}/kick/{userId}(id=${projectId}, userId=${member.getId()})}">
+                <input type="submit" class="red-button button" th:value="Выгнать">
+            </form>
+        </div>
+    </div>
+    <div th:if="isOwner" class="content block align-center">
+        <h2>Приглашения</h2>
+        <form th:method="post" class="add-user" th:action="@{/projects/{id}/members(id=${projectId})}" th:object="${request}">
+            <div>
+                <label for="title">Никнейм</label>
+                <input type="text" th:field="*{username}" id="title" placeholder="Никнейм" required>
+                <input type="submit" class="button" th:value="Пригласить">
+            </div>
+            <div>
+                <span th:if="${#fields.hasErrors('username')}" class="red" th:errors="*{username}"></span>
+            </div>
+        </form>
+        <div class="member" th:each="user : ${invitations}">
+            <div>
+                <img class="ultra-small-img" th:src="'/image/' + ${user.getImage()}">
+                <p th:text="${user.getUsername()}" class="member-username"></p>
+            </div>
+            <form th:method="post"
+                  th:action="@{/projects/{id}/members/{userId}/delete(id=${projectId}, userId=${user.getId()})}">
+                <input type="submit" class="red-button button" th:value="Отменить">
+            </form>
+        </div>
+    </div>
+    <div class="buttons-block-around">
+        <a type="button" class="button" th:href="@{/projects/{id}(id=${projectId})}">Назад</a>
+    </div>
+</div>
+</body>
+</html>

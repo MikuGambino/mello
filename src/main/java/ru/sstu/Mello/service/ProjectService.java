@@ -16,6 +16,8 @@ import ru.sstu.Mello.repository.UserRepository;
 import ru.sstu.Mello.security.UserPrincipal;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class ProjectService {
                 .color("#e9edc9")
                 .title(projectRequest.getTitle())
                 .owner(user)
+                .members(new ArrayList<>(List.of(user)))
                 .isActive(true)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -79,5 +82,72 @@ public class ProjectService {
         listingRepository.save(complete);
 
         return project.getId();
+    }
+
+    public List<User> getMembers(int id) {
+        Project project = getProject(id);
+
+        List<User> members = project.getMembers();
+        members.remove(project.getOwner());
+
+        return members;
+    }
+
+    public boolean isOwner(String username, int id) {
+        User user = userRepository.findByUsername(username);
+        Project project = getProject(id);
+
+        return user.getUsername().equals(project.getOwner().getUsername());
+    }
+
+    public void sendInvite(int id, String username, UserPrincipal currentUser) {
+        Project project = getProject(id);
+        User user = userRepository.findByUsername(username);
+        project.getInvitations().add(user);
+        projectRepository.save(project);
+    }
+
+    public boolean hasInvitation(int id, String username) {
+        Project project = getProject(id);
+        User user = userRepository.findByUsername(username);
+        return project.getInvitations().contains(user);
+    }
+
+    public boolean isMember(int id, String username) {
+        Project project = getProject(id);
+        User user = userRepository.findByUsername(username);
+        return project.getMembers().contains(user);
+    }
+
+    public void deleteInvitation(int projectId, int userId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        project.getInvitations().remove(user);
+        projectRepository.save(project);
+    }
+
+    public void rejectRequest(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        project.getInvitations().remove(user);
+        projectRepository.save(project);
+    }
+
+    public void acceptRequest(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        project.getInvitations().remove(user);
+        project.getMembers().add(user);
+        projectRepository.save(project);
+    }
+
+    public void kickMember(int projectId, int userId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        project.getMembers().remove(user);
+        projectRepository.save(project);
     }
 }

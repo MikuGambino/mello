@@ -13,7 +13,16 @@ nav a{
 }
 nav .logo{
     font-size: 40px;
+    margin-right: 100px;
 }
 .right-nav a{
     margin-left: 20px;
+}
+.header-link {
+    margin-left: 20px;
+    font-size: 20px;
+}
+.left-nav {
+    display: flex;
+    align-items: center;
 }
