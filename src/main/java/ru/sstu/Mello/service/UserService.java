@@ -3,7 +3,10 @@ package ru.sstu.Mello.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,6 +89,11 @@ public class UserService {
 
         user.setUsername(request.getUsername());
         userRepository.save(user);
+
+        currentUser.setUsername(request.getUsername());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(currentUser, currentUser.getPassword(),
+                currentUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     public User getUser(int id) {
