@@ -150,4 +150,34 @@ public class ProjectService {
         project.getMembers().remove(user);
         projectRepository.save(project);
     }
+
+    public ProjectRequest getProjectRequest(int projectId) {
+        Project project = getProject(projectId);
+        ProjectRequest projectRequest = new ProjectRequest();
+        projectRequest.setTitle(project.getTitle());
+        return projectRequest;
+    }
+
+    public void deleteProject(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        projectRepository.delete(project);
+    }
+
+    public void editProject(int projectId, ProjectRequest projectRequest, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        project.setTitle(projectRequest.getTitle());
+        projectRepository.save(project);
+    }
+
+    public void archiveProject(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        project.setActive(false);
+        projectRepository.save(project);
+    }
+    
+    public void unarchiveProject(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        project.setActive(true);
+        projectRepository.save(project);
+    }
 }

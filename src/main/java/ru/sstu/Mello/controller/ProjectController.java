@@ -59,7 +59,9 @@ public class ProjectController {
                               @PathVariable int id) {
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
+        model.addAttribute("isOwner", projectService.isOwner(currentUser.getUsername(), id));
         model.addAttribute("projectPage", true);
+        model.addAttribute("projectTitle", projectService.getProject(id).getTitle());
         model.addAttribute("lists", listingService.getListingsByProject(id));
 
         return "projects/main";
@@ -288,4 +290,48 @@ public class ProjectController {
 
         return "redirect:/projects/{id}/members";
     }
+
+    @GetMapping("/{id}/edit")
+    public String updateProject(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("projectId", id);
+        model.addAttribute("isActive", projectService.getProject(id).isActive());
+        model.addAttribute("project", projectService.getProjectRequest(id));
+
+        return "projects/edit-project";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+        projectService.deleteProject(id, currentUser);
+
+        return "redirect:/projects";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String deleteProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+                                @ModelAttribute("project") ProjectRequest projectRequest,
+                                BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("image", currentUser.getImage());
+            model.addAttribute("projectId", id);
+            return "projects/edit-project";
+        }
+
+        projectService.editProject(id, projectRequest, currentUser);
+        return "redirect:/projects/{id}";
+    }
+
+    @PostMapping("/{id}/archive")
+    public String archiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+        projectService.archiveProject(id, currentUser);
+        return "redirect:/projects";
+    }
+
+    @PostMapping("/{id}/unarchive")
+    public String unarchiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+        projectService.unarchiveProject(id, currentUser);
+        return "redirect:/projects/{id}";
+    }
+
 }

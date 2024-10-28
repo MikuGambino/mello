@@ -12,7 +12,10 @@
           <a th:href="@{/projects}" class="logo">Mello</a>
           <a th:href="@{/projects/{projectId}/members(projectId=${projectId})}"
              th:if="${projectPage != null}" class="header-link">Участники</a>
+          <a th:href="@{/projects/{projectId}/edit(projectId=${projectId})}"
+             th:if="${projectPage != null && isOwner != null && isOwner}" class="header-link">Настройки</a>
       </div>
+      <p th:if="${projectPage != null}" class="projectTitle" th:text="${projectTitle}"></p>
       <div class="right-nav">
           <a th:href="@{/profile}" sec:authorize="isAuthenticated()">
               <img class="ultra-small-img" th:src="'/image/' + ${image}"/>

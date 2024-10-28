@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Настройки проекта</title>
+</head>
+<body>
+<div layout:fragment="content" class="narrow-block">
+  <h1 class="head-title">Настройки проекта</h1>
+  <div class="block">
+    <div class="buttons-block-around">
+      <form th:method="post"
+            th:action="@{/projects/{id}/delete(id=${projectId})}">
+        <input type="submit" class="red-button button" value="Удалить проект">
+      </form>
+      <form th:method="post" th:if="${isActive}"
+            th:action="@{/projects/{id}/archive(id=${projectId})}">
+        <input type="submit" class="button" value="Добавить в архив">
+      </form>
+      <form th:method="post" th:if="${!isActive}"
+            th:action="@{/projects/{id}/unarchive(id=${projectId})}">
+        <input type="submit" class="button" value="Убрать из архива">
+      </form>
+    </div>
+  </div>
+  <form class="block form" th:action="@{/projects/{id}/edit(id=${projectId})}" th:method="post" th:object="${project}">
+    <label for="title">Название</label>
+    <input type="text" th:field="*{title}" id="title" placeholder="Название">
+    <span th:if="${#fields.hasErrors('title')}" class="red" th:errors="*{title}"></span>
+    <div class="buttons-block-around">
+      <a type="button" class="button" th:href="@{/projects/{id}(id=${projectId})}">Назад</a>
+      <input type="submit" value="Сохранить" class="button">
+    </div>
+  </form>
+</div>
+</body>
+</html>

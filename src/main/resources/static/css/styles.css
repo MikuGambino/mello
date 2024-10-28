@@ -526,3 +526,6 @@ td {
 .add-user input[type=text] {
     width: 200px;
 }
+.projectTitle {
+    font-size: 30px;
+}
