@@ -41,4 +41,11 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> invitations;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "follower",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> followers;
 }

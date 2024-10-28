@@ -429,9 +429,12 @@ td {
     width: 30px;
     height: 30px;
 }
-.project-buttons a {
+.projects a {
     text-decoration: none;
     padding: 0px;
+    color: black;
+}
+.projects form {
     margin: 0 10px;
 }
 .margin-top {

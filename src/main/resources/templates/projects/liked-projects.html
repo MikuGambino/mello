@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{default}" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Избранное</title>
+</head>
+<body>
+<div layout:fragment="content" class="row margin-top">
+  <div class="projects-buttons">
+    <a type="button" class="project-button" th:href="@{/projects/add}">Создать проект</a>
+    <a type="button" class="project-button" th:href="@{/projects}">Проекты</a>
+    <a type="button" class="project-button active" th:href="@{/projects/liked}">Избранное</a>
+    <a type="button" class="project-button" th:href="@{/projects/archived}">Архив</a>
+  </div>
+  <div class="projects">
+    <div class="project" th:each="project : ${projects}" th:style="'background: ' + ${project.getColor()}">
+      <a class="project-name"
+         th:href="@{/projects/{id}(id=${project.getId()})}" th:text="${project.getTitle()}"></a>
+      <div class="project-buttons">
+        <form th:action="@{/projects/{id}/delete(id=${project.getId()})}"
+              th:method="post">
+          <button type="submit" th:data-param="${project.getTitle()}" class="image-button" title="Удалить"
+                  th:onclick="|return confirmDelete(this.getAttribute('data-param'))|">
+            <img class="icon-button" th:src="'/image/trash.png'"/>
+          </button>
+        </form>
+        <form th:action="@{/projects/{id}/archive(id=${project.getId()})}"
+              th:if="${project.isOwner() && project.isActive()}"
+              th:method="post">
+          <button type="submit" class="image-button" title="Добавить в архив">
+            <img class="icon-button" th:src="'/image/inbox.png'"/>
+          </button>
+        </form>
+        <form th:action="@{/projects/{id}/unarchive(id=${project.getId()})}"
+              th:if="${project.isOwner() && !project.isActive()}"
+              th:method="post">
+          <button type="submit" class="image-button" title="Убрать из архива">
+            <img class="icon-button" th:src="'/image/unzip.png'"/>
+          </button>
+        </form>
+        <form th:action="@{/projects/{id}/like(id=${project.getId()})}"
+              th:if="${project.isOwner() && !project.isLiked()}"
+              th:method="post">
+          <button type="submit" class="image-button" title="Добавить в избранное">
+            <img class="icon-button" th:src="'/image/notliked.png'"/>
+          </button>
+        </form>
+        <form th:action="@{/projects/{id}/unlike(id=${project.getId()})}"
+              th:if="${project.isOwner() && project.isLiked()}"
+              th:method="post">
+          <button type="submit" class="image-button" title="Удалить из избранного">
+            <img class="icon-button" th:src="'/image/liked.png'"/>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script th:src="@{/js/delete-confirm.js}"></script>
+</div>
+</body>
+</html>

@@ -9,6 +9,7 @@ import ru.sstu.Mello.model.Project;
 import ru.sstu.Mello.model.Task;
 import ru.sstu.Mello.model.User;
 import ru.sstu.Mello.model.dto.ProjectRequest;
+import ru.sstu.Mello.model.dto.ProjectResponse;
 import ru.sstu.Mello.repository.ListingRepository;
 import ru.sstu.Mello.repository.ProjectRepository;
 import ru.sstu.Mello.repository.TaskRepository;
@@ -17,6 +18,7 @@ import ru.sstu.Mello.security.UserPrincipal;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -179,5 +181,58 @@ public class ProjectService {
         Project project = getProject(projectId);
         project.setActive(true);
         projectRepository.save(project);
+    }
+
+    public void likeProject(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        project.getFollowers().add(user);
+        projectRepository.save(project);
+    }
+
+    public void unlikeProject(int projectId, UserPrincipal currentUser) {
+        Project project = getProject(projectId);
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        project.getFollowers().remove(user);
+        projectRepository.save(project);
+    }
+
+    private List<ProjectResponse> buildProjectResponse(User user, List<Project> projects) {
+        return projects.stream()
+                .sorted(Comparator.comparing(Project::getCreatedAt))
+                .map(
+                p -> ProjectResponse.builder()
+                        .title(p.getTitle())
+                        .isOwner(p.getOwner().equals(user))
+                        .id(p.getId())
+                        .color(p.getColor())
+                        .isActive(p.isActive())
+                        .isLiked(p.getFollowers().contains(user))
+                        .build()
+        ).toList();
+    }
+
+    public List<ProjectResponse> getAllProjectResponses(UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        List<Project> projects = projectRepository.findAll();
+        return buildProjectResponse(user, projects);
+    }
+
+    public List<ProjectResponse> getLikedProjectResponses(UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        List<Project> projects = projectRepository.findAll()
+                                                .stream()
+                                                .filter(p -> p.getFollowers().contains(user))
+                                                .toList();
+        return buildProjectResponse(user, projects);
+    }
+
+    public List<ProjectResponse> getArchivedProjectResponses(UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        List<Project> projects = projectRepository.findAll()
+                .stream()
+                .filter(p -> !p.isActive())
+                .toList();
+        return buildProjectResponse(user, projects);
     }
 }

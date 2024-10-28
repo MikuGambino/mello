@@ -1,5 +1,6 @@
 package ru.sstu.Mello.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,25 @@ public class ProjectController {
     @GetMapping
     public String projects(Model model, @CurrentUser UserPrincipal currentUser) {
         model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("projects", projectService.getAllProjectResponses(currentUser));
 
         return "projects/all-projects";
+    }
+
+    @GetMapping("/liked")
+    public String likedProjects(Model model, @CurrentUser UserPrincipal currentUser) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("projects", projectService.getLikedProjectResponses(currentUser));
+
+        return "projects/liked-projects";
+    }
+
+    @GetMapping("/archived")
+    public String archivedProjects(Model model, @CurrentUser UserPrincipal currentUser) {
+        model.addAttribute("image", currentUser.getImage());
+        model.addAttribute("projects", projectService.getArchivedProjectResponses(currentUser));
+
+        return "projects/archived-projects";
     }
 
     @GetMapping("/add")
@@ -309,7 +327,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{id}/edit")
-    public String deleteProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+    public String editProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
                                 @ModelAttribute("project") ProjectRequest projectRequest,
                                 BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -323,9 +341,12 @@ public class ProjectController {
     }
 
     @PostMapping("/{id}/archive")
-    public String archiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+    public String archiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+                                 HttpServletRequest request) {
         projectService.archiveProject(id, currentUser);
-        return "redirect:/projects";
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/projects");
     }
 
     @PostMapping("/{id}/unarchive")
@@ -334,4 +355,21 @@ public class ProjectController {
         return "redirect:/projects/{id}";
     }
 
+    @PostMapping("/{id}/like")
+    public String likeProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+                              HttpServletRequest request) {
+        projectService.likeProject(id, currentUser);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/projects");
+    }
+
+    @PostMapping("/{id}/unlike")
+    public String unlikeProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+                              HttpServletRequest request) {
+        projectService.unlikeProject(id, currentUser);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/projects");
+    }
 }

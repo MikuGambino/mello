@@ -79,6 +79,14 @@ create table invitations(
 	FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
 );
 
+create table follower (
+	user_id int NOT NULL,
+	project_id int NOT NULL,
+	PRIMARY KEY (user_id, project_id),
+	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+	FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE
+);
+
 INSERT INTO roles(id, title) 
 VALUES
 (1, 'ROLE_ADMIN'),
