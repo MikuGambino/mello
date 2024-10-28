@@ -10,7 +10,7 @@
 <body>
 <div layout:fragment="content">
   <div class="content profile">
-    <img class="small-img" th:src="'/image/' + ${image}">
+    <img class="small-img" th:src="'/image/account/' + ${image}">
     <p th:text="${profile.getUsername()}"></p>
   </div>
   <div class="menu-buttons">

@@ -14,7 +14,7 @@ import java.io.IOException;
 public class ImageController {
     private final ImageService imageService;
 
-    @GetMapping("/image/{name}")
+    @GetMapping("/image/account/{name}")
     public byte[] getImg(@PathVariable(value = "name") String name) throws IOException {
         return imageService.getImg(name);
     }

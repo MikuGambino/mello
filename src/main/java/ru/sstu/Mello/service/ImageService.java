@@ -20,7 +20,7 @@ import static java.nio.file.Files.deleteIfExists;
 public class ImageService {
 
     public byte[] getImg(@PathVariable(value = "name") String name) throws IOException {
-        String path = "src/main/resources/static/image/";
+        String path = "src/main/resources/static/image/account/";
         var s = new FileInputStream(path + name);
         var file = s.readAllBytes();
         s.close();
@@ -29,7 +29,7 @@ public class ImageService {
 
     @SneakyThrows
     public String saveImage(MultipartFile multipartFile) {
-        String imagePath = "src/main/resources/static/image/";
+        String imagePath = "src/main/resources/static/image/account/";
         String name = UUID.randomUUID().toString();
         var split = Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.");
         String fullname = name + "." + split[1];
@@ -44,7 +44,7 @@ public class ImageService {
 
     @SneakyThrows
     public void deleteImage(String filename) {
-        String imagePath = "src/main/resources/static/image/";
+        String imagePath = "src/main/resources/static/image/account/";
         Path path = Path.of(imagePath + filename);
         deleteIfExists(path);
     }

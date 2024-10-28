@@ -18,7 +18,7 @@
       <p th:if="${projectPage != null}" class="projectTitle" th:text="${projectTitle}"></p>
       <div class="right-nav">
           <a th:href="@{/profile}" sec:authorize="isAuthenticated()">
-              <img class="ultra-small-img" th:src="'/image/' + ${image}"/>
+              <img class="ultra-small-img" th:src="'/image/account/' + ${image}"/>
           </a>
       </div>
   </nav>
