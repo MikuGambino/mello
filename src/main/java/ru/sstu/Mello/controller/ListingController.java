@@ -22,7 +22,6 @@ public class ListingController {
     @PostMapping("/{listId}/change-order")
     public ResponseEntity<Void> saveListingState(@PathVariable int listId, @RequestBody List<TaskRequest> tasks,
                                                  @CurrentUser UserPrincipal currentUser) {
-        // todo добавить проверку
         listingService.changeOrder(listId, tasks);
         return new ResponseEntity<>(HttpStatus.OK);
     }

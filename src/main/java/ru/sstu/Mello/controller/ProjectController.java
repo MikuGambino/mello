@@ -24,7 +24,6 @@ public class ProjectController {
     private final ProjectService projectService;
     private final ListingService listingService;
     private final TaskService taskService;
-    private final SubtaskService subtaskService;
     private final UserService userService;
 
     @GetMapping
@@ -149,86 +148,6 @@ public class ProjectController {
         }
 
         taskService.addTask(listingId, task, currentUser);
-        return "redirect:/projects/{id}";
-    }
-
-    @GetMapping("/{id}/tasks/{taskId}")
-    public String editTaskView(@PathVariable int id, @PathVariable int taskId,
-                               Model model, @CurrentUser UserPrincipal currentUser) {
-        model.addAttribute("image", currentUser.getImage());
-        model.addAttribute("task", taskService.getTask(taskId));
-        model.addAttribute("projectId", id);
-
-        return "/projects/task";
-    }
-
-    @PostMapping("/{id}/tasks/{taskId}")
-    public String editTask(@PathVariable int id, @PathVariable int taskId,
-                           Model model, @CurrentUser UserPrincipal currentUser,
-                           @ModelAttribute @Valid EditTaskRequest task, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("image", currentUser.getImage());
-            model.addAttribute("task", taskService.getTask(taskId));
-            model.addAttribute("projectId", id);
-            return "projects/add-task";
-        }
-
-        taskService.saveTask(taskId, task, currentUser);
-
-        return "redirect:/projects/{id}";
-    }
-
-    @GetMapping("/{id}/tasks/{taskId}/subtasks/new")
-    public String newSubtaskView(Model model, @CurrentUser UserPrincipal currentUser,
-                                 @PathVariable int id, @PathVariable int taskId) {
-        model.addAttribute("image", currentUser.getImage());
-        model.addAttribute("subtask", new SubtaskRequest());
-        model.addAttribute("projectId", id);
-        model.addAttribute("taskId", taskId);
-
-        return "projects/add-subtask";
-    }
-
-    @PostMapping("/{id}/tasks/{taskId}/subtasks/new")
-    public String newSubtask(@PathVariable int id, @PathVariable int taskId,
-                             Model model, @CurrentUser UserPrincipal currentUser,
-                             @ModelAttribute @Valid SubtaskRequest subtask, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("image", currentUser.getImage());
-            model.addAttribute("projectId", id);
-            model.addAttribute("taskId", taskId);
-            return "projects/add-subtask";
-        }
-
-        subtaskService.addSubtask(taskId, subtask, currentUser);
-
-        return "redirect:/projects/{id}/tasks/{taskId}";
-    }
-
-    @PostMapping("/{id}/tasks/{taskId}/subtasks/{subtaskId}/delete")
-    public String deleteSubtask(@PathVariable int id, @PathVariable int taskId, @PathVariable int subtaskId,
-                                @CurrentUser UserPrincipal currentUser) {
-        subtaskService.deleteSubtask(subtaskId, currentUser);
-
-        return "redirect:/projects/{id}/tasks/{taskId}";
-    }
-
-    @ResponseBody
-    @PostMapping("/{id}/tasks/{taskId}/subtasks/{subtaskId}/update-status")
-    public ResponseEntity<Void> updateStatus(@PathVariable int subtaskId,
-                                             @RequestParam("status") boolean status,
-                                             @CurrentUser UserPrincipal currentUser) {
-        subtaskService.updateStatus(subtaskId, status, currentUser);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/{id}/tasks/{taskId}/delete")
-    public String deleteTask(@PathVariable int id, @PathVariable int taskId,
-                             @CurrentUser UserPrincipal currentUser) {
-        taskService.deleteTask(taskId, currentUser);
-
         return "redirect:/projects/{id}";
     }
 
