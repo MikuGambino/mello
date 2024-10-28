@@ -49,7 +49,7 @@ public class TaskController {
 
         taskService.saveTask(taskId, task, currentUser);
 
-        return "redirect:/projects/{id}";
+        return "redirect:/projects/{id}/tasks/{taskId}";
     }
 
     @GetMapping("/{taskId}/subtasks/new")
