@@ -232,7 +232,10 @@ public class ProjectService {
 
     public List<ProjectResponse> getAllProjectResponses(UserPrincipal currentUser) {
         User user = userRepository.findByUsername(currentUser.getUsername());
-        List<Project> projects = projectRepository.findAll();
+        List<Project> projects = projectRepository.findAll()
+                .stream()
+                .filter(p -> p.getMembers().contains(user))
+                .toList();
         return buildProjectResponse(user, projects);
     }
 
@@ -240,6 +243,7 @@ public class ProjectService {
         User user = userRepository.findByUsername(currentUser.getUsername());
         List<Project> projects = projectRepository.findAll()
                                                 .stream()
+                                                .filter(p -> p.getMembers().contains(user))
                                                 .filter(p -> p.getFollowers().contains(user))
                                                 .toList();
         return buildProjectResponse(user, projects);
@@ -249,6 +253,7 @@ public class ProjectService {
         User user = userRepository.findByUsername(currentUser.getUsername());
         List<Project> projects = projectRepository.findAll()
                 .stream()
+                .filter(p -> p.getMembers().contains(user))
                 .filter(p -> !p.isActive())
                 .toList();
         return buildProjectResponse(user, projects);
