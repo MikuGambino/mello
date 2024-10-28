@@ -31,6 +31,7 @@ public class TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException("Listing", "id", listingId));
         projectService.checkAccess(listing.getProject().getId(), currentUser);
 
+
         Task task = Task.builder()
                 .title(addTaskRequest.getTitle())
                 .list(listing)
@@ -40,14 +41,15 @@ public class TaskService {
 
         taskRepository.save(task);
 
-        addTaskRequest.getSubtasks().stream()
+        List<Subtask> subtasks = addTaskRequest.getSubtasks().stream()
                 .map(tr ->
                         Subtask.builder()
                                 .title(tr.getName())
                                 .task(task)
                                 .isComplete(false)
                                 .build())
-                .peek(subtaskRepository::save);
+                .peek(subtaskRepository::save)
+                .toList();
     }
 
     public Task getTask(int id) {
