@@ -274,9 +274,12 @@ public class ProjectController {
     }
 
     @PostMapping("/{id}/unarchive")
-    public String unarchiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser) {
+    public String unarchiveProject(@PathVariable int id, @CurrentUser UserPrincipal currentUser,
+                                   HttpServletRequest request) {
         projectService.unarchiveProject(id, currentUser);
-        return "redirect:/projects/{id}";
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/projects");
     }
 
     @PostMapping("/{id}/like")
