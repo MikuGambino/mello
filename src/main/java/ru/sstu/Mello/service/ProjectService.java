@@ -3,6 +3,7 @@ package ru.sstu.Mello.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.sstu.Mello.exception.AccessDeniedException;
 import ru.sstu.Mello.exception.ResourceNotFoundException;
 import ru.sstu.Mello.model.Listing;
 import ru.sstu.Mello.model.Project;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -104,6 +106,7 @@ public class ProjectService {
     }
 
     public void sendInvite(int id, String username, UserPrincipal currentUser) {
+        checkOwnerAccess(id, currentUser);
         Project project = getProject(id);
         User user = userRepository.findByUsername(username);
         project.getInvitations().add(user);
@@ -123,6 +126,7 @@ public class ProjectService {
     }
 
     public void deleteInvitation(int projectId, int userId, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
@@ -134,6 +138,9 @@ public class ProjectService {
     public void rejectRequest(int projectId, UserPrincipal currentUser) {
         Project project = getProject(projectId);
         User user = userRepository.findByUsername(currentUser.getUsername());
+        if (!project.getInvitations().contains(user)) {
+            throw new AccessDeniedException();
+        }
         project.getInvitations().remove(user);
         projectRepository.save(project);
     }
@@ -141,12 +148,16 @@ public class ProjectService {
     public void acceptRequest(int projectId, UserPrincipal currentUser) {
         Project project = getProject(projectId);
         User user = userRepository.findByUsername(currentUser.getUsername());
+        if (!project.getInvitations().contains(user)) {
+            throw new AccessDeniedException();
+        }
         project.getInvitations().remove(user);
         project.getMembers().add(user);
         projectRepository.save(project);
     }
 
     public void kickMember(int projectId, int userId, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
@@ -162,29 +173,34 @@ public class ProjectService {
     }
 
     public void deleteProject(int projectId, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         projectRepository.delete(project);
     }
 
     public void editProject(int projectId, ProjectRequest projectRequest, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         project.setTitle(projectRequest.getTitle());
         projectRepository.save(project);
     }
 
     public void archiveProject(int projectId, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         project.setActive(false);
         projectRepository.save(project);
     }
     
     public void unarchiveProject(int projectId, UserPrincipal currentUser) {
+        checkOwnerAccess(projectId, currentUser);
         Project project = getProject(projectId);
         project.setActive(true);
         projectRepository.save(project);
     }
 
     public void likeProject(int projectId, UserPrincipal currentUser) {
+        checkAccess(projectId, currentUser);
         Project project = getProject(projectId);
         User user = userRepository.findByUsername(currentUser.getUsername());
         project.getFollowers().add(user);
@@ -192,6 +208,7 @@ public class ProjectService {
     }
 
     public void unlikeProject(int projectId, UserPrincipal currentUser) {
+        checkAccess(projectId, currentUser);
         Project project = getProject(projectId);
         User user = userRepository.findByUsername(currentUser.getUsername());
         project.getFollowers().remove(user);
@@ -235,5 +252,23 @@ public class ProjectService {
                 .filter(p -> !p.isActive())
                 .toList();
         return buildProjectResponse(user, projects);
+    }
+
+    public void checkAccess(int id, UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        Project project = getProject(id);
+
+        if (!project.getMembers().contains(user)) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public void checkOwnerAccess(int id, UserPrincipal currentUser) {
+        User user = userRepository.findByUsername(currentUser.getUsername());
+        Project project = getProject(id);
+
+        if (!project.getOwner().equals(user)) {
+            throw new AccessDeniedException();
+        }
     }
 }

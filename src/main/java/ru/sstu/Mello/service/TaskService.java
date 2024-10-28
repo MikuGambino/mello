@@ -3,17 +3,12 @@ package ru.sstu.Mello.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.sstu.Mello.exception.AccessDeniedException;
 import ru.sstu.Mello.exception.ResourceNotFoundException;
-import ru.sstu.Mello.model.Listing;
-import ru.sstu.Mello.model.Project;
-import ru.sstu.Mello.model.Subtask;
-import ru.sstu.Mello.model.Task;
+import ru.sstu.Mello.model.*;
 import ru.sstu.Mello.model.dto.AddTaskRequest;
 import ru.sstu.Mello.model.dto.EditTaskRequest;
-import ru.sstu.Mello.repository.ListingRepository;
-import ru.sstu.Mello.repository.ProjectRepository;
-import ru.sstu.Mello.repository.SubtaskRepository;
-import ru.sstu.Mello.repository.TaskRepository;
+import ru.sstu.Mello.repository.*;
 import ru.sstu.Mello.security.UserPrincipal;
 
 import java.util.ArrayList;
@@ -27,12 +22,14 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final ListingRepository listingRepository;
     private final SubtaskRepository subtaskRepository;
-    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final ProjectService projectService;
 
     @Transactional
     public void addTask(int listingId, AddTaskRequest addTaskRequest, UserPrincipal currentUser) {
         Listing listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Listing", "id", listingId));
+        projectService.checkAccess(listing.getProject().getId(), currentUser);
 
         Task task = Task.builder()
                 .title(addTaskRequest.getTitle())
@@ -63,7 +60,7 @@ public class TaskService {
 
     public void saveTask(int id, EditTaskRequest taskRequest, UserPrincipal currentUser) {
         Task task = getTask(id);
-
+        projectService.checkAccess(task.getList().getProject().getId(), currentUser);
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
 
@@ -72,6 +69,7 @@ public class TaskService {
 
     public void deleteTask(int taskId, UserPrincipal currentUser) {
         Task task = getTask(taskId);
+        projectService.checkAccess(task.getList().getProject().getId(), currentUser);
         taskRepository.delete(task);
     }
 }

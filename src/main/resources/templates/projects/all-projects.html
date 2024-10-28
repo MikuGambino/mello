@@ -21,6 +21,7 @@
                th:href="@{/projects/{id}(id=${project.getId()})}" th:text="${project.getTitle()}"></a>
             <div class="project-buttons">
                 <form th:action="@{/projects/{id}/delete(id=${project.getId()})}"
+                      th:if="${project.isOwner()}"
                       th:method="post">
                     <button type="submit" th:data-param="${project.getTitle()}" class="image-button" title="Удалить"
                             th:onclick="|return confirmDelete(this.getAttribute('data-param'))|">
@@ -42,14 +43,14 @@
                     </button>
                 </form>
                 <form th:action="@{/projects/{id}/like(id=${project.getId()})}"
-                      th:if="${project.isOwner() && !project.isLiked()}"
+                      th:if="${!project.isLiked()}"
                       th:method="post">
                     <button type="submit" class="image-button" title="Добавить в избранное">
                         <img class="icon-button" th:src="'/image/notliked.png'"/>
                     </button>
                 </form>
                 <form th:action="@{/projects/{id}/unlike(id=${project.getId()})}"
-                      th:if="${project.isOwner() && project.isLiked()}"
+                      th:if="${project.isLiked()}"
                       th:method="post">
                     <button type="submit" class="image-button" title="Удалить из избранного">
                         <img class="icon-button" th:src="'/image/liked.png'"/>

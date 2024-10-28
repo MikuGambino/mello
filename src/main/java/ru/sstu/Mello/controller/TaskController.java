@@ -12,6 +12,7 @@ import ru.sstu.Mello.model.dto.EditTaskRequest;
 import ru.sstu.Mello.model.dto.SubtaskRequest;
 import ru.sstu.Mello.security.CurrentUser;
 import ru.sstu.Mello.security.UserPrincipal;
+import ru.sstu.Mello.service.ProjectService;
 import ru.sstu.Mello.service.SubtaskService;
 import ru.sstu.Mello.service.TaskService;
 
@@ -21,10 +22,12 @@ import ru.sstu.Mello.service.TaskService;
 public class TaskController {
     private final TaskService taskService;
     private final SubtaskService subtaskService;
+    private final ProjectService projectService;
 
     @GetMapping("/{taskId}")
     public String editTaskView(@PathVariable int id, @PathVariable int taskId,
                                Model model, @CurrentUser UserPrincipal currentUser) {
+        projectService.checkAccess(id, currentUser);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("task", taskService.getTask(taskId));
         model.addAttribute("projectId", id);
@@ -52,6 +55,7 @@ public class TaskController {
     @GetMapping("/{taskId}/subtasks/new")
     public String newSubtaskView(Model model, @CurrentUser UserPrincipal currentUser,
                                  @PathVariable int id, @PathVariable int taskId) {
+        projectService.checkAccess(id, currentUser);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("subtask", new SubtaskRequest());
         model.addAttribute("projectId", id);
@@ -94,7 +98,7 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/tasks/{taskId}/delete")
+    @PostMapping("/{taskId}/delete")
     public String deleteTask(@PathVariable int id, @PathVariable int taskId,
                              @CurrentUser UserPrincipal currentUser) {
         taskService.deleteTask(taskId, currentUser);

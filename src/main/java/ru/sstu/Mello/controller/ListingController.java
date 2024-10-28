@@ -22,7 +22,7 @@ public class ListingController {
     @PostMapping("/{listId}/change-order")
     public ResponseEntity<Void> saveListingState(@PathVariable int listId, @RequestBody List<TaskRequest> tasks,
                                                  @CurrentUser UserPrincipal currentUser) {
-        listingService.changeOrder(listId, tasks);
+        listingService.changeOrder(listId, tasks, currentUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -31,7 +31,7 @@ public class ListingController {
     public ResponseEntity<Void> moveTask(@PathVariable int targetListId, @PathVariable int taskId,
                                          @CurrentUser UserPrincipal currentUser) {
         // todo добавить проверку
-        listingService.moveTask(targetListId, taskId);
+        listingService.moveTask(targetListId, taskId, currentUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

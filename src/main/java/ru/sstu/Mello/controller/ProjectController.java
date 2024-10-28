@@ -74,6 +74,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public String projectView(Model model, @CurrentUser UserPrincipal currentUser,
                               @PathVariable int id) {
+        projectService.checkAccess(id, currentUser);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
         model.addAttribute("isOwner", projectService.isOwner(currentUser.getUsername(), id));
@@ -87,6 +88,7 @@ public class ProjectController {
     @GetMapping("/{id}/add-listing")
     public String addListingView(Model model, @CurrentUser UserPrincipal currentUser,
                                  @PathVariable int id) {
+        projectService.checkAccess(id, currentUser);
         model.addAttribute("listing", new ListingRequest());
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
@@ -128,6 +130,7 @@ public class ProjectController {
     @GetMapping("/{id}/lists/{listingId}/tasks/new")
     public String createTaskView(Model model, @CurrentUser UserPrincipal currentUser,
                                  @PathVariable int id, @PathVariable int listingId) {
+        projectService.checkAccess(id, currentUser);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("task", new AddTaskRequest());
         model.addAttribute("projectId", id);
@@ -153,6 +156,7 @@ public class ProjectController {
 
     @GetMapping("/{id}/members")
     public String members(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser) {
+        projectService.checkAccess(id, currentUser);
         Project project = projectService.getProject(id);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
@@ -230,6 +234,7 @@ public class ProjectController {
 
     @GetMapping("/{id}/edit")
     public String updateProject(@PathVariable int id, Model model, @CurrentUser UserPrincipal currentUser) {
+        projectService.checkOwnerAccess(id, currentUser);
         model.addAttribute("image", currentUser.getImage());
         model.addAttribute("projectId", id);
         model.addAttribute("isActive", projectService.getProject(id).isActive());
@@ -280,6 +285,7 @@ public class ProjectController {
         projectService.likeProject(id, currentUser);
 
         String referer = request.getHeader("Referer");
+        Logger.getAnonymousLogger().info("redirect:" + (referer != null ? referer : "/projects"));
         return "redirect:" + (referer != null ? referer : "/projects");
     }
 

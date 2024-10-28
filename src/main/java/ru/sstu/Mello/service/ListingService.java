@@ -2,6 +2,7 @@ package ru.sstu.Mello.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.sstu.Mello.exception.AccessDeniedException;
 import ru.sstu.Mello.exception.BadRequestException;
 import ru.sstu.Mello.exception.ResourceNotFoundException;
 import ru.sstu.Mello.model.Listing;
@@ -13,6 +14,7 @@ import ru.sstu.Mello.model.dto.TaskRequest;
 import ru.sstu.Mello.repository.ListingRepository;
 import ru.sstu.Mello.repository.ProjectRepository;
 import ru.sstu.Mello.repository.TaskRepository;
+import ru.sstu.Mello.repository.UserRepository;
 import ru.sstu.Mello.security.UserPrincipal;
 
 import java.util.Comparator;
@@ -25,6 +27,7 @@ public class ListingService {
     private final ListingRepository listingRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+    private final ProjectService projectService;
 
     public List<Listing> getListingsByProject(int projectId) {
         return listingRepository.findAll()
@@ -44,9 +47,9 @@ public class ListingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Listing", "id", id));
     }
 
-    public void changeOrder(int id, List<TaskRequest> taskRequests) {
+    public void changeOrder(int id, List<TaskRequest> taskRequests, UserPrincipal currentUser) {
         Listing listing = getListing(id);
-
+        projectService.checkAccess(listing.getProject().getId(), currentUser);
         List<Task> tasks = listing.getTasks().stream().sorted(Comparator.comparingInt(Task::getId)).toList();
         taskRequests = taskRequests.stream().sorted(Comparator.comparingInt(TaskRequest::getId)).toList();
 
@@ -58,10 +61,13 @@ public class ListingService {
         listingRepository.save(listing);
     }
 
-    public void moveTask(int targetListId, int taskId) {
+    public void moveTask(int targetListId, int taskId, UserPrincipal currentUser) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
         Listing listing = getListing(targetListId);
+
+        projectService.checkAccess(listing.getProject().getId(), currentUser);
+
         task.setList(listing);
         taskRepository.save(task);
     }
@@ -69,6 +75,8 @@ public class ListingService {
     public void addListing(int projectId, ListingRequest listingRequest, UserPrincipal currentUser) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
+
+        projectService.checkAccess(projectId, currentUser);
 
         Listing listing = Listing.builder()
                 .project(project)
@@ -84,12 +92,15 @@ public class ListingService {
         if (!listing.getTasks().isEmpty()) {
             throw new BadRequestException("Список имеет задачи");
         }
+        projectService.checkAccess(listing.getProject().getId(), currentUser);
+
 
         listingRepository.delete(listing);
     }
 
     public void changeTitle(int listingId, String title, UserPrincipal currentUser) {
         Listing listing = getListing(listingId);
+        projectService.checkAccess(listing.getProject().getId(), currentUser);
         listing.setTitle(title);
         listingRepository.save(listing);
     }
