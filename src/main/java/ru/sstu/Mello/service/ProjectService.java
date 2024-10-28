@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
+    private final ColorGenerator colorGenerator;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
@@ -39,7 +40,7 @@ public class ProjectService {
         User user = userRepository.findByUsername(userPrincipal.getUsername());
 
         Project project = Project.builder()
-                .color("#e9edc9")
+                .color(colorGenerator.generatePastelColor())
                 .title(projectRequest.getTitle())
                 .owner(user)
                 .members(new ArrayList<>(List.of(user)))
