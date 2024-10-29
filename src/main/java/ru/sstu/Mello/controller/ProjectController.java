@@ -288,7 +288,6 @@ public class ProjectController {
         projectService.likeProject(id, currentUser);
 
         String referer = request.getHeader("Referer");
-        Logger.getAnonymousLogger().info("redirect:" + (referer != null ? referer : "/projects"));
         return "redirect:" + (referer != null ? referer : "/projects");
     }
 
